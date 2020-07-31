@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dailyExercise/constants.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         fontFamily: 'Cario',
@@ -17,92 +19,139 @@ class MyApp extends StatelessWidget {
         textTheme: Theme.of(context).textTheme.apply(displayColor: kTextColor),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: HomeScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            height: size.height * .45,
+            decoration: BoxDecoration(
+                color: Color(0xFFF5CEB8),
+                image: DecorationImage(
+                    alignment: Alignment.centerLeft,
+                    image:
+                        AssetImage("assets/images/undraw_pilates_gpdb.png"))),
+          ),
+          SafeArea(
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                              color: Color(0xFFF2BEA1), shape: BoxShape.circle),
+                          child: SvgPicture.asset("assets/icons/menu.svg"),
+                        ),
+                      ),
+                      Text(
+                        'Good morning TIKDERJAR',
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            .copyWith(fontWeight: FontWeight.w900),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 30),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(29.5)),
+                        child: TextField(
+                          decoration: InputDecoration(
+                              hintText: "Search",
+                              border: InputBorder.none,
+                              icon:
+                                  SvgPicture.asset("assets/icons/search.svg")),
+                        ),
+                      ),
+                      Expanded(
+                          child: GridView.count(
+                        crossAxisCount: 2,
+                        childAspectRatio: .85,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        children: <Widget>[
+                          CategoryCard(
+                            svgsrc: "assets/icons/Hamburger.svg",
+                            title: "Diet Reccommend",
+                          ),
+                          CategoryCard(
+                              svgsrc: "assets/icons/Excrecises.svg",
+                              title: "Kaly Exercises"),
+                          CategoryCard(
+                              svgsrc: "assets/icons/Meditation.svg",
+                              title: "Meditation"),
+                          CategoryCard(
+                              svgsrc: "assets/icons/yoga.svg",
+                              title: "Yoga time")
+                        ],
+                      ))
+                    ],
+                  )))
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+    );
+  }
+}
+
+class CategoryCard extends StatelessWidget {
+  final String svgsrc;
+  final String title;
+  final Function press;
+  const CategoryCard({Key key, this.svgsrc, this.title, this.press}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(13),
+      child: Container(
+        // padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+              offset: Offset(0, 17),
+              blurRadius: 17,
+              spreadRadius: -23,
+              color: kShadowColor)
+        ], color: Colors.white, borderRadius: BorderRadius.circular(13)),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+              onTap: press,
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: <Widget>[
+                    Spacer(),
+                    SvgPicture.asset(svgsrc),
+                    Spacer(),
+                    Text(title,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .title
+                            .copyWith(fontSize: 15))
+                  ],
+                ),
+              )),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
